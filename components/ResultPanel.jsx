@@ -301,24 +301,51 @@ export default function ResultPanel({ phase, data, error, statusIdx, onRetry }) 
         </div>
       ) : (
         <div className="notfound-card" style={{ animationDelay: '160ms' }}>
-          <p className="nf-title">
-            <b>Berikut kemungkinan kenapa:</b>
-          </p>
-          <ul className="nf-list">
-            <li>Preset-nya dibagikan lewat <b>link bio</b> (bukan di deskripsi/komentar) — cek profil akunnya.</li>
-            <li>Link preset ada di komentar yang <b>lewat batas</b> yang bisa dibaca otomatis.</li>
-            <li>Owner ngapus komentar / preset-nya udah nggak dibagikan.</li>
-          </ul>
+          {scanned.repliesUnread ? (
+            <div className="nf-strong">
+              <p className="nf-strong-title">
+                ⚠ {scanned.replyTotal || 'BEBERAPA'} BALASAN TERDETEKSI DI VIDEO INI
+              </p>
+              <p>
+                Preset 5MB/XML biasanya dibagikan owner lewat <b>balasan komentar</b> — tapi TikTok sedang
+                membatasi pembacaan balasan dari server kami. Percobaan kedua sering berhasil (jalur aksesnya
+                beda). Kalau masih gagal, buka langsung komentarnya:
+              </p>
+              <div className="nf-actions">
+                <button type="button" className="btn btn-sm btn-lime" onClick={onRetry}>
+                  <Refresh size={13} /> COBA LAGI
+                </button>
+                <a className="btn btn-sm" href={video.url} target="_blank" rel="noopener noreferrer">
+                  <External size={13} /> BUKA KOMENTAR TIKTOK
+                </a>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className="nf-title">
+                <b>Berikut kemungkinan kenapa:</b>
+              </p>
+              <ul className="nf-list">
+                <li>
+                  Preset-nya dibagikan lewat <b>link bio</b> (bukan di deskripsi/komentar) — cek profil akunnya.
+                </li>
+                <li>Link preset ada di komentar yang <b>lewat batas</b> yang bisa dibaca otomatis.</li>
+                <li>Owner ngapus komentar / preset-nya udah nggak dibagikan.</li>
+              </ul>
+            </>
+          )}
           {(scanned.notes || []).map((n, i) => (
             <p key={i} className="nf-note mono">
               ⚠ {n}
             </p>
           ))}
-          <div className="nf-actions">
-            <a className="btn btn-sm" href={video.url} target="_blank" rel="noopener noreferrer">
-              <External size={13} /> BUKA VIDEO ASLI
-            </a>
-          </div>
+          {!scanned.repliesUnread ? (
+            <div className="nf-actions">
+              <a className="btn btn-sm" href={video.url} target="_blank" rel="noopener noreferrer">
+                <External size={13} /> BUKA VIDEO ASLI
+              </a>
+            </div>
+          ) : null}
         </div>
       )}
     </div>
